@@ -1,36 +1,42 @@
 <template>
-  <div id="app">
-    <Form />
+  <div id="app" class="">
+    <custom-form />
   </div>
 </template>
 
 <script>
-import Form from "./components/Form.vue";
+import CustomForm from './components/CustomForm.vue';
 
 export default {
-  name: "App",
+  name: 'App',
   components: {
-    Form,
+    CustomForm,
   },
 };
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  color: #2c3e50;
-  background-color: #fafafa;
-  padding: 24px;
-  box-sizing: border-box;
-}
-
 html,
 body,
 #app {
   height: 100%;
 }
 
-* {
-  box-sizing: border-box;
+html {
+  overflow: hidden;
+}
+
+#app {
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.input:focus {
+  border-color: rgb(15, 119, 234);
+  box-shadow: 0 0 0 0.125em rgba(15, 119, 234, 0.25);
+}
+
+.b-radio.radio:not(.button) {
+  margin-right: 1.5em;
 }
 </style>
