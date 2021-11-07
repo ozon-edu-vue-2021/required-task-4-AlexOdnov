@@ -1,174 +1,249 @@
 <template>
-  <form
-    class="grid container is-max-widescreen box"
-    @submit.prevent="submitForm"
-  >
-    <h2 class="title is-4 span-6">Личные данные</h2>
+  <validation-observer v-slot="{ handleSubmit }" slim>
+    <form
+      class="grid container is-max-widescreen box"
+      @submit.prevent="handleSubmit(submitForm)"
+    >
+      <h2 class="title is-4 span-6">Личные данные</h2>
 
-    <b-field class="span-2" label="Фамилия" custom-class="is-medium">
-      <b-input v-model="formData.lastName" required />
-    </b-field>
+      <input-with-validation
+        class="span-2"
+        label="Фамилия"
+        labelClass="is-medium"
+        v-model="formData.lastName"
+        vid="lastName"
+        rules="required|cyrilic"
+      />
 
-    <b-field class="span-2" label="Имя" custom-class="is-medium">
-      <b-input v-model="formData.name" required />
-    </b-field>
+      <input-with-validation
+        class="span-2"
+        label="Имя"
+        labelClass="is-medium"
+        v-model="formData.name"
+        vid="name"
+        rules="required|cyrilic"
+      />
 
-    <b-field class="span-2" label="Отчество" custom-class="is-medium">
-      <b-input v-model="formData.surName" required />
-    </b-field>
+      <input-with-validation
+        class="span-2"
+        label="Отчество"
+        labelClass="is-medium"
+        v-model="formData.surName"
+        vid="surName"
+        rules="required|cyrilic"
+      />
 
-    <b-field class="span-3" label="Дата рождения" custom-class="is-medium">
-      <b-datepicker
-        placeholder="дд.мм.гггг"
+      <date-picker-with-validation
+        class="span-3"
+        label="Дата рождения"
+        labelClass="is-medium"
         v-model="formData.birthday"
+        vid="birthday"
+        rules="required|date"
+        placeholder="дд.мм.гггг"
         locale="ru-RU"
         editable
-        required
       />
-    </b-field>
 
-    <b-field class="span-3" label="E-mail" custom-class="is-medium">
-      <b-input v-model="formData.email" type="email" required />
-    </b-field>
+      <input-with-validation
+        class="span-3"
+        label="E-mail"
+        labelClass="is-medium"
+        v-model="formData.email"
+        type="email"
+        vid="email"
+        rules="required|email"
+      />
 
-    <b-field class="span-6" label="Пол" custom-class="is-medium">
-      <b-radio
-        v-model="formData.sex"
-        name="sex"
-        type="is-info"
-        native-value="мужской"
-      >
-        Мужской
-      </b-radio>
-      <b-radio
-        v-model="formData.sex"
-        name="sex"
-        type="is-info"
-        native-value="женский"
-      >
-        Женский
-      </b-radio>
-    </b-field>
+      <b-field class="span-6" label="Пол" custom-class="is-medium">
+        <b-radio
+          v-model="formData.sex"
+          name="sex"
+          type="is-info"
+          nativeValue="мужской"
+        >
+          Мужской
+        </b-radio>
+        <b-radio
+          v-model="formData.sex"
+          name="sex"
+          type="is-info"
+          nativeValue="женский"
+        >
+          Женский
+        </b-radio>
+      </b-field>
 
-    <h2 class="title is-4 span-6">Паспортные данные</h2>
+      <h2 class="title is-4 span-6">Паспортные данные</h2>
 
-    <search-select
-      class="span-3"
-      label="Гражданство"
-      custom-class="is-medium"
-      v-model="formData.citizenship"
-      :optionsList="citizenships"
-    />
+      <search-select-with-validation
+        class="span-3"
+        label="Гражданство"
+        labelClass="is-medium"
+        v-model="formData.citizenship"
+        :optionsList="citizenships"
+        vid="citizenship"
+        :rules="`required|oneOf:${citizenships
+          .map((el) => el.content)
+          .join(',')}`"
+      />
 
-    <div class="grid span-6" v-if="formData.citizenship === 'Russia'">
-      <b-field label="Серия паспорта" custom-class="is-medium">
-        <b-input
+      <div class="grid span-6" v-if="formData.citizenship === 'Russia'">
+        <input-with-validation
+          class="span-1"
+          label="Серия паспорта"
+          labelClass="is-medium"
           v-model="formData.pasSeries"
-          maxlength="4"
           :has-counter="false"
-          required
+          vid="pasSeries"
+          rules="required|digits:4"
+          :maxlength="4"
         />
-      </b-field>
 
-      <b-field class="span-2" label="Номер паспорта" custom-class="is-medium">
-        <b-input
+        <input-with-validation
+          class="span-2"
+          label="Номер паспорта"
+          labelClass="is-medium"
           v-model="formData.pasNumber"
-          maxlength="6"
           :has-counter="false"
-          required
+          vid="pasNumber"
+          rules="required|digits:6"
+          :maxlength="6"
         />
-      </b-field>
 
-      <b-field class="span-3" label="Дата выдачи" custom-class="is-medium">
-        <b-datepicker
-          placeholder="дд.мм.гггг"
+        <date-picker-with-validation
+          class="span-3"
+          label="Дата выдачи"
+          labelClass="is-medium"
           v-model="formData.pasDate"
+          vid="pasDate"
+          rules="required|date"
+          placeholder="дд.мм.гггг"
           locale="ru-RU"
           editable
-          required
         />
-      </b-field>
-    </div>
+      </div>
 
-    <div class="grid span-6" v-else>
+      <div class="grid span-6" v-else>
+        <input-with-validation
+          class="span-3"
+          label="Фамилия на латинице"
+          labelClass="is-medium"
+          v-model="formData.latinLastName"
+          vid="latinLastName"
+          rules="required|latin"
+          key="latinLastName"
+        />
+
+        <input-with-validation
+          class="span-3"
+          label="Имя на латинице"
+          labelClass="is-medium"
+          v-model="formData.latinName"
+          vid="latinName"
+          rules="required|latin"
+          key="latinName"
+        />
+
+        <input-with-validation
+          class="span-2"
+          label="Номер паспорта"
+          labelClass="is-medium"
+          v-model="formData.pasForeignNumber"
+          vid="pasForeignNumber"
+          rules="required|numeric"
+          key="pasForeignNumber"
+        />
+
+        <search-select-with-validation
+          class="span-2"
+          label="Страна выдачи"
+          labelClass="is-medium"
+          v-model="formData.pasCountry"
+          :optionsList="citizenships"
+          vid="pasCountry"
+          :rules="`required|oneOf:${citizenships
+            .map((el) => el.content)
+            .join(',')}`"
+        />
+
+        <search-select-with-validation
+          class="span-2"
+          label="Тип паспорта"
+          labelClass="is-medium"
+          v-model="formData.pasType"
+          :optionsList="pasTypes"
+          vid="pasTypes"
+          :rules="`required|oneOf:${pasTypes
+            .map((el) => el.content)
+            .join(',')}`"
+        />
+      </div>
+
       <b-field
-        class="span-3"
-        label="Фамилия на латинице"
-        custom-class="is-medium"
+        class="span-6"
+        label="Меняли ли фамилию или имя?"
+        customClass="is-medium"
       >
-        <b-input v-model="formData.latinLastName" required />
+        <b-radio
+          v-model="formData.isNameChange"
+          name="isNameChange"
+          type="is-info"
+          :nativeValue="true"
+          >Да</b-radio
+        >
+        <b-radio
+          v-model="formData.isNameChange"
+          name="isNameChange"
+          type="is-info"
+          :nativeValue="false"
+        >
+          Нет
+        </b-radio>
       </b-field>
 
-      <b-field class="span-3" label="Имя на латинице" custom-class="is-medium">
-        <b-input v-model="formData.latinName" required />
-      </b-field>
+      <template v-if="formData.isNameChange">
+        <input-with-validation
+          class="span-3"
+          label="Фамилия"
+          labelClass="is-medium"
+          v-model="formData.initialLastName"
+          vid="initialLastName"
+          rules="required"
+        />
 
-      <b-field class="span-2" label="Номер паспорта" custom-class="is-medium">
-        <b-input v-model="formData.pasForeignNumber" required />
-      </b-field>
+        <input-with-validation
+          class="span-3"
+          label="Имя"
+          labelClass="is-medium"
+          v-model="formData.initialName"
+          vid="initialName"
+          rules="required"
+        />
+      </template>
 
-      <search-select
-        class="span-2"
-        label="Страна выдачи"
-        custom-class="is-medium"
-        v-model="formData.pasCountry"
-        :optionsList="citizenships"
-      />
-
-      <search-select
-        class="span-2"
-        label="Тип паспорта"
-        custom-class="is-medium"
-        v-model="formData.pasType"
-        :optionsList="pasTypes"
-      />
-    </div>
-
-    <b-field
-      class="span-6"
-      label="Меняли ли фамилию или имя?"
-      custom-class="is-medium"
-    >
-      <b-radio
-        v-model="formData.isNameChange"
-        name="isNameChange"
-        type="is-info"
-        :native-value="true"
-        >Да</b-radio
+      <b-button class="button-submit span-6" type="is-info" nativeType="submit"
+        >Отправить</b-button
       >
-      <b-radio
-        v-model="formData.isNameChange"
-        name="isNameChange"
-        type="is-info"
-        :native-value="false"
-      >
-        Нет
-      </b-radio>
-    </b-field>
-
-    <template v-if="formData.isNameChange">
-      <b-field class="span-3" label="Фамилия" custom-class="is-medium">
-        <b-input v-model="formData.initialLastName" required />
-      </b-field>
-
-      <b-field class="span-3" label="Имя" custom-class="is-medium">
-        <b-input v-model="formData.initialName" required />
-      </b-field>
-    </template>
-
-    <b-button class="button-submit span-6" type="is-info" native-type="submit"
-      >Отправить</b-button
-    >
-  </form>
+    </form>
+  </validation-observer>
 </template>
 
 <script>
 import citizenships from '../assets/data/citizenships.json';
 import pasTypes from '../assets/data/passport-types.json';
-import SearchSelect from './SearchSelect.vue';
+import { ValidationObserver } from 'vee-validate';
+import InputWithValidation from './InputWithValidation.vue';
+import DatePickerWithValidation from './DatePickerWithValidation.vue';
+import SearchSelectWithValidation from './SearchSelectWithValidation.vue';
 
 export default {
-  components: { SearchSelect },
+  components: {
+    ValidationObserver,
+    InputWithValidation,
+    DatePickerWithValidation,
+    SearchSelectWithValidation,
+  },
   name: 'CustomForm',
   data() {
     return {
@@ -224,6 +299,11 @@ export default {
           this.formData.pasDate =
             '';
       }
+      this.$buefy.toast.open({
+        duration: 2000,
+        message: `Форма отправлена!`,
+        type: 'is-info',
+      });
       console.log(JSON.stringify(this.formData));
     },
   },
@@ -237,14 +317,21 @@ export default {
   grid-auto-rows: min-content;
   column-gap: 1rem;
 }
+.span-1 {
+  grid-column: span 1;
+  align-self: end;
+}
 .span-2 {
   grid-column: span 2;
+  align-self: end;
 }
 .span-3 {
   grid-column: span 3;
+  align-self: end;
 }
 .span-6 {
   grid-column: span 6;
+  align-self: end;
 }
 .title {
   margin-bottom: 0.5rem;
@@ -255,5 +342,18 @@ export default {
 .button-submit {
   justify-self: end;
   margin-top: 1.5rem;
+}
+@media (max-width: 600px) {
+  .span-1,
+  .span-2 {
+    grid-column: span 3;
+  }
+}
+@media (max-width: 420px) {
+  .span-1,
+  .span-2,
+  .span-3 {
+    grid-column: span 6;
+  }
 }
 </style>

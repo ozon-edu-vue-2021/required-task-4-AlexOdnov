@@ -39,4 +39,8 @@ html {
 .b-radio.radio:not(.button) {
   margin-right: 1.5em;
 }
+
+.field {
+  margin-bottom: 0.75rem;
+}
 </style>

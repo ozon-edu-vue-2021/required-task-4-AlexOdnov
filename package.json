@@ -13,6 +13,7 @@
     "@fortawesome/vue-fontawesome": "^2.0.6",
     "buefy": "^0.9.11",
     "core-js": "^3.6.5",
+    "vee-validate": "^3.4.13",
     "vue": "^2.6.11",
     "vue-click-outside": "^1.1.0"
   },
