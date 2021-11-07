@@ -205,20 +205,20 @@
       <template v-if="formData.isNameChange">
         <input-with-validation
           class="span-3"
-          label="Фамилия"
+          label="Предыдущая фамилия"
           labelClass="is-medium"
           v-model="formData.initialLastName"
           vid="initialLastName"
-          rules="required"
+          rules="required|cyrilic"
         />
 
         <input-with-validation
           class="span-3"
-          label="Имя"
+          label="Предыдущее имя"
           labelClass="is-medium"
           v-model="formData.initialName"
           vid="initialName"
-          rules="required"
+          rules="required|cyrilic"
         />
       </template>
 
