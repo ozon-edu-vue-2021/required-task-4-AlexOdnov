@@ -8,7 +8,7 @@
     <b-input
       v-bind="$attrs"
       :value="value"
-      @blur="validation"
+      @blur="validation(value)"
       @input="onInput"
     />
   </b-field>
@@ -49,13 +49,13 @@ export default {
   methods: {
     onInput(val) {
       if (this.isValidateBefore) {
-        this.validation();
+        this.validation(val);
       }
       this.$emit('input', val);
     },
-    validation() {
+    validation(val) {
       const regex = new RegExp(this.rules);
-      const error = !this.value || !regex.test(this.value);
+      const error = !val || !regex.test(val);
       this.error = error;
       this.isValidateBefore = true;
       this.changeValidStatus(!error);
@@ -69,7 +69,7 @@ export default {
   },
   created() {
     if (this.value) {
-      this.validation();
+      this.validation(this.value);
     } else {
       this.changeValidStatus(false);
     }
