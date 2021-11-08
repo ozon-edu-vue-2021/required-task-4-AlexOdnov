@@ -63,7 +63,11 @@ export default {
     },
   },
   created() {
-    this.changeValidStatus(false);
+    if (this.value) {
+      this.validation();
+    } else {
+      this.changeValidStatus(false);
+    }
   },
   beforeDestroy() {
     this.changeValidStatus(true);
