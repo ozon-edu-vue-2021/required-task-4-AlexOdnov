@@ -1,39 +1,35 @@
 <template>
-  <div class="search-select">
-    <ul
-      v-if="isOpen"
-      class="search-select__list"
-      v-click-outside="clickOutside"
-    >
-      <template v-if="filteredOptionsList.length">
-        <li
-          class="search-select__item"
-          v-for="el in filteredOptionsList"
-          :key="el.id"
-          @click="selectOptions(el.content)"
-        >
-          {{ el.content }}
-        </li>
-      </template>
-      <li v-else class="search-select__item" @click="hideOptions">
-        Ничего не найдено
-      </li>
-    </ul>
-    <b-field
-      v-bind="$attrs"
-      :customClass="labelClass"
-      :type="{ 'is-danger': error }"
-      :message="error ? message : ''"
-    >
+  <b-field
+    v-bind="$attrs"
+    :customClass="labelClass"
+    :type="{ 'is-danger': error }"
+    :message="error ? message : ''"
+  >
+    <div class="search-select" v-click-outside="clickOutside">
       <b-input
         v-bind="$attrs"
         :value="value"
         @input="onInput"
-        @click.native.stop="openOptions"
+        @click.native="openOptions"
         :icon-right="icon"
       />
-    </b-field>
-  </div>
+      <ul v-if="isOpen" class="search-select__list">
+        <template v-if="filteredOptionsList.length">
+          <li
+            class="search-select__item"
+            v-for="el in filteredOptionsList"
+            :key="el.id"
+            @click="selectOptions(el.content)"
+          >
+            {{ el.content }}
+          </li>
+        </template>
+        <li v-else class="search-select__item" @click="hideOptions">
+          Ничего не найдено
+        </li>
+      </ul>
+    </div>
+  </b-field>
 </template>
 
 <script>
@@ -66,6 +62,7 @@ export default {
       isOpen: false,
       error: false,
       message: 'Выберите значение из списка',
+      wasOpened: false,
     };
   },
   computed: {
@@ -84,15 +81,18 @@ export default {
     onInput: debounce(function (val) {
       this.$emit('input', val);
     }, 200),
-    openOptions(e) {
-      e.target.select();
+    openOptions() {
+      this.$emit('input', '');
       this.isOpen = true;
+      this.wasOpened = true;
     },
     hideOptions() {
       this.isOpen = false;
     },
     clickOutside() {
-      this.validation(this.value);
+      if (this.wasOpened) {
+        this.validation(this.value);
+      }
       this.hideOptions();
     },
     selectOptions(val) {
@@ -132,6 +132,7 @@ export default {
 <style scoped>
 .search-select {
   position: relative;
+  height: min-content;
 }
 .search-select__list {
   position: absolute;

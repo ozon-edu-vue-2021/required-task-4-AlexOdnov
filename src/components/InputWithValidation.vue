@@ -43,16 +43,21 @@ export default {
   data() {
     return {
       error: false,
+      isValidateBefore: false,
     };
   },
   methods: {
     onInput(val) {
+      if (this.isValidateBefore) {
+        this.validation();
+      }
       this.$emit('input', val);
     },
     validation() {
       const regex = new RegExp(this.rules);
       const error = !this.value || !regex.test(this.value);
       this.error = error;
+      this.isValidateBefore = true;
       this.changeValidStatus(!error);
     },
     changeValidStatus(status) {
