@@ -63,6 +63,7 @@ export default {
       error: false,
       message: 'Выберите значение из списка',
       wasOpened: false,
+      previousValue: '',
     };
   },
   computed: {
@@ -82,6 +83,7 @@ export default {
       this.$emit('input', val);
     }, 200),
     openOptions() {
+      this.previousValue = this.value;
       this.$emit('input', '');
       this.isOpen = true;
       this.wasOpened = true;
@@ -90,8 +92,12 @@ export default {
       this.isOpen = false;
     },
     clickOutside() {
+      const value = this.value || this.previousValue;
+      if (this.isOpen) {
+        this.$emit('input', value);
+      }
       if (this.wasOpened) {
-        this.validation(this.value);
+        this.validation(value);
       }
       this.hideOptions();
     },
